@@ -42,6 +42,7 @@ public class API {
 	}
 
 	private Event[] parse(String request) {
+		System.out.println(request);
 		Event[] events = new Gson().fromJson(request, Event[].class);
 		return events;
 	}
