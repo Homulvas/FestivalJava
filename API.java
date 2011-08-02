@@ -2,10 +2,14 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
+import javax.xml.crypto.Data;
+
+import com.google.gson.Gson;
 
 public class API {
 	static final String FORMAT_JSON = "application/json";
@@ -20,21 +24,26 @@ public class API {
 		this.secret = secret;
 	}
 
-	public String getEvents(HashMap<String, String> query) {
+	public Event[] getEvents(HashMap<String, String> query) {
 		return getEvents(query, FORMAT_JSON);
 	}
 
-	public String getEvents(HashMap<String, String> query, String format) {
+	public Event[] getEvents(HashMap<String, String> query, String format) {
 		String params = "";
 		for (String key : query.keySet()) {
 			params += key + "=" + query.get(key) + "&";
 		}
 		params = params.substring(0, params.length() - 1);
 		try {
-			return request("/events?" + params, format);
+			return parse(request("/events?" + params, format));
 		} catch (Exception e) {
 			return null;
 		}
+	}
+
+	private Event[] parse(String request) {
+		Event[] events = new Gson().fromJson(request, Event[].class);
+		return events;
 	}
 
 	private String request(String url, String format) throws Exception {
