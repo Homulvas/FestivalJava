@@ -23,6 +23,18 @@ public class API {
 		this.key = key;
 		this.secret = secret;
 	}
+	
+	public Event getEvent(String id) {
+		return getEvent(id, FORMAT_JSON);
+	}
+
+	private Event getEvent(String id, String format) {
+		try {
+			return parseSingle(request("/events/" + id, format));
+		} catch (Exception e) {
+			return null;
+		}
+	}
 
 	public Event[] getEvents(HashMap<String, String> query) {
 		return getEvents(query, FORMAT_JSON);
@@ -42,14 +54,18 @@ public class API {
 	}
 
 	private Event[] parse(String request) {
-		System.out.println(request);
 		Event[] events = new Gson().fromJson(request, Event[].class);
 		return events;
+	}
+	
+	private Event parseSingle(String request) {
+		System.out.println(request);
+		Event event = new Gson().fromJson(request, Event.class);
+		return event;
 	}
 
 	private String request(String url, String format) throws Exception {
 		String fullUrl = BASE_URL + getSignedUrl(url);
-		System.out.println(fullUrl);
 		URL connectionUrl = new URL(fullUrl);
 		URLConnection connection = connectionUrl.openConnection();
 		connection.setRequestProperty("accept", format);
