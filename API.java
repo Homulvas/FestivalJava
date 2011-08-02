@@ -1,30 +1,59 @@
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.HashMap;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
 public class API {
-    static final String FORMAT_JSON = "application/json";
-    static final String FORMAT_ATOM = "application/atom+xml";    
-    static final String FORMAT_IVES = "application/vnd.ives+xml";
-    static final String BASE_URL = "http://api.festivalslab.com";
+	static final String FORMAT_JSON = "application/json";
+	static final String FORMAT_ATOM = "application/atom+xml";
+	static final String FORMAT_IVES = "application/vnd.ives+xml";
+	static final String BASE_URL = "http://api.festivalslab.com";
 	private String key;
 	private String secret;
-	private boolean debug = false;
-	
+
+	public API(String key, String secret) {
+		this.key = key;
+		this.secret = secret;
+	}
+
 	public String getEvents(HashMap<String, String> query) {
 		return getEvents(query, FORMAT_JSON);
 	}
-	
+
 	public String getEvents(HashMap<String, String> query, String format) {
 		String params = "";
 		for (String key : query.keySet()) {
 			params += key + "=" + query.get(key) + "&";
 		}
 		params = params.substring(0, params.length() - 1);
-		return "/events?" + params;
+		try {
+			return request("/events?" + params, format);
+		} catch (Exception e) {
+			return null;
+		}
 	}
-	
+
+	private String request(String url, String format) throws Exception {
+		String fullUrl = BASE_URL + getSignedUrl(url);
+		System.out.println(fullUrl);
+		URL connectionUrl = new URL(fullUrl);
+		URLConnection connection = connectionUrl.openConnection();
+		connection.setRequestProperty("accept", format);
+		BufferedReader in = new BufferedReader(new InputStreamReader(
+				connection.getInputStream()));
+		String inputLine;
+		String outputLine = "";
+		while ((inputLine = in.readLine()) != null) {
+			outputLine += inputLine;
+		}
+		in.close();
+		return outputLine;
+	}
+
 	private String getSignedUrl(String url) {
 		if (url.contains("?")) {
 			url += "&key=" + key;
@@ -34,7 +63,7 @@ public class API {
 		url += "&signature=" + getSignature(url);
 		return url;
 	}
-	
+
 	private String getSignature(String data) {
 		try {
 			Mac mac = Mac.getInstance("HmacSHA1");
