@@ -1,10 +1,29 @@
+import java.util.HashMap;
+
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
 public class API {
+    static final String FORMAT_JSON = "application/json";
+    static final String FORMAT_ATOM = "application/atom+xml";    
+    static final String FORMAT_IVES = "application/vnd.ives+xml";
+    static final String BASE_URL = "http://api.festivalslab.com";
 	private String key;
 	private String secret;
 	private boolean debug = false;
+	
+	public String getEvents(HashMap<String, String> query) {
+		return getEvents(query, FORMAT_JSON);
+	}
+	
+	public String getEvents(HashMap<String, String> query, String format) {
+		String params = "";
+		for (String key : query.keySet()) {
+			params += key + "=" + query.get(key) + "&";
+		}
+		params = params.substring(0, params.length() - 1);
+		return "/events?" + params;
+	}
 	
 	private String getSignedUrl(String url) {
 		if (url.contains("?")) {
