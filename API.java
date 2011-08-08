@@ -25,10 +25,22 @@ public class API {
 	public Event getEvent(String id) {
 		return getEvent(id, FORMAT_JSON);
 	}
+	
+	public Event getEventFromUrl(String id) {
+		return getEventFromUrl(id, FORMAT_JSON);
+	}
 
-	private Event getEvent(String id, String format) {
+	public Event getEvent(String id, String format) {
 		try {
 			return parseSingle(request("/events/" + id, format));
+		} catch (Exception e) {
+			return null;
+		}
+	}
+	
+	public Event getEventFromUrl(String id, String format) {
+		try {
+			return parseSingle(request(id.replace(BASE_URL, ""), format));
 		} catch (Exception e) {
 			return null;
 		}
@@ -57,13 +69,13 @@ public class API {
 	}
 	
 	private Event parseSingle(String request) {
-		System.out.println(request);
 		Event event = new Gson().fromJson(request, Event.class);
 		return event;
 	}
 
 	private String request(String url, String format) throws Exception {
 		String fullUrl = BASE_URL + getSignedUrl(url);
+		System.out.println(fullUrl);
 		URL connectionUrl = new URL(fullUrl);
 		URLConnection connection = connectionUrl.openConnection();
 		connection.setRequestProperty("accept", format);
@@ -106,3 +118,4 @@ public class API {
 		}
 	}
 }
+
