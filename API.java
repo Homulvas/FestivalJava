@@ -75,7 +75,6 @@ public class API {
 
 	private String request(String url, String format) throws Exception {
 		String fullUrl = BASE_URL + getSignedUrl(url);
-		System.out.println(fullUrl);
 		URL connectionUrl = new URL(fullUrl);
 		URLConnection connection = connectionUrl.openConnection();
 		connection.setRequestProperty("accept", format);
@@ -113,7 +112,6 @@ public class API {
 			}
 			return key;
 		} catch (Exception e) {
-			System.out.println(e.getMessage());
 			return null;
 		}
 	}

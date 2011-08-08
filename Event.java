@@ -20,4 +20,8 @@ public class Event {
 	{
 		return title;
 	}
+
+	public String getFestival() {
+		return festival;
+	}
 }
