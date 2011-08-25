@@ -11,7 +11,7 @@ public class Festival {
 		API api = new API("3FPE9X151AMKIqrv",
 				"V6KLOjmYaz8r_cYWTKIfVPfkHIiIj7Ha");
 		HashMap<String, String> map = new HashMap<String, String>();
-		map.put("festival", "tattoo");
+		map.put("date_from", "2000-01-01 00:00:01");
 		map.put("size", Integer.toString(size));
 		int from = 0;
 		map.put("from", Integer.toString(from));
@@ -19,7 +19,12 @@ public class Festival {
 		
 		while (events != null) {
 			for (Event event : events) {
-				System.out.println(event.getFestival());
+				if (!event.getLatitude().equals("0")  && !event.getFestival().equals("Edinburgh International Book Festival")) {
+					System.out.println(event.getTitle());
+					System.out.println(event.getFestival());
+					System.out.println(event.getLatitude());
+					System.out.println(event.getLongitude());
+				}
 			}
 			from += size;
 			map.put("from", Integer.toString(from));

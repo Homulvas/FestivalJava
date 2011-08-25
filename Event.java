@@ -24,4 +24,12 @@ public class Event {
 	public String getFestival() {
 		return festival;
 	}
+	
+	public String getLatitude() {
+		return latitude;
+	}
+	
+	public String getLongitude() {
+		return longitude;
+	}
 }
